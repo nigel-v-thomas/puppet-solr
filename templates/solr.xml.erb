@@ -2,7 +2,7 @@
     Context configuration file for the Solr Web App
 -->
 
-<Context path="/solr" docBase="<%= @solr_doc_base %>"
+<Context path="/solr" docBase="<%= @solr_home_dir %>"
    debug="0" privileged="true" allowLinking="true" crossContext="true">
   <!-- make symlinks work in Tomcat -->
   <Resources className="org.apache.naming.resources.FileDirContext" allowLinking="true" />

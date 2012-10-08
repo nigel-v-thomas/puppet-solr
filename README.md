@@ -6,17 +6,17 @@ Based on (https://github.com/codeinthehole/puppet-solr, https://github.com/vamse
 
 Usage
 ======
-Minimal:
+### Minimal:
 
-class { "solr":
-        install_dir => "/vagrant/www/deploy/solr",
-}
+    class { "solr":
+            install_dir => "/vagrant/www/deploy/solr",
+    }
 
-Maximal:
+### Maximal:
 
-class { "solr":
-      source_url => "http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1.tgz",
-      install_dir => "/usr/share/solr",
-      package => "apache-solr-3.6.1",
-      solr_data_dir => "/var/lib/solr/data",
-}
+    class { "solr":
+          source_url => "http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1.tgz",
+          install_dir => "/usr/share/solr",
+          package => "apache-solr-3.6.1",
+          solr_data_dir => "/var/lib/solr/data",
+    }

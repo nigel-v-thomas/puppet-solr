@@ -10,7 +10,7 @@
 #
 # Parameters:
 #  source_url - mirror to fetch the tar/gzipped file
-#  install_dir - directory to install solr
+#  home_dir - directory to install solr
 #  package - name of the package, usually the same as tar/gzipped file name w/o extension
 #  solr_data_dir - solr data directory
 # Actions:
@@ -22,7 +22,7 @@
 # [Remember: No empty lines between comments and class definition]
 class solr (
       $source_url="http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1.tgz",
-      $install_dir="/usr/share/solr",
+      $home_dir="/usr/share/solr",
       $package="apache-solr-3.6.1",
       $solr_data_dir="/var/lib/solr/data",
       $cores = ['development','test']
@@ -32,7 +32,7 @@ class solr (
   
   class { "solr::install":
     source_url => $source_url,
-    install_dir => $install_dir,
+    home_dir => $home_dir,
     solr_data_dir => $solr_data_dir,
     package => $package,
   }
@@ -40,7 +40,7 @@ class solr (
   # TODO Create our solr cores
   #solr::core {$cores:
   #  base_data_dir => $solr_data_dir,
-  #  solr_home => $install_dir,
+  #  solr_home => $home_dir,
   #  require => Class['solr::install'],
   #}
 }

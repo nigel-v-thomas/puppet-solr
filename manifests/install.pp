@@ -1,33 +1,34 @@
-class solr::install ($source_url, $install_dir, $solr_data_dir, $package) {
+class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
   $tmp_dir = "/var/tmp"
   
-  $destination = "$tmp_dir/$package.tgz"
 
-  exec { "install_dir":
-    command => "echo 'ceating ${install_dir}' && mkdir -p ${install_dir}",
+  exec { "home_dir":
+    command => "echo 'ceating ${home_dir}' && mkdir -p ${home_dir}",
     path => ["/bin", "/usr/bin", "/usr/sbin"],
-    creates => $install_dir
+    creates => $home_dir
   }
+
+  $destination = "$tmp_dir/$package.tgz"
 
   exec { "download-solr":
     command => "wget $source_url",
-    unless => "test -f $destination",
+    creates => "$destination",
     cwd => "$tmp_dir",
     path => ["/bin", "/usr/bin", "/usr/sbin"],
-    require => Exec["install_dir"],
+    require => Exec["home_dir"],
   }
   
   exec { "unpack-solr":
     command => "tar -xzf $destination --directory=$tmp_dir",
-    unless => "test -d $tmp_dir/$package",
+    creates => "$tmp_dir/$package",
     cwd => "$tmp_dir",
     require => Exec["download-solr"],
     path => ["/bin", "/usr/bin", "/usr/sbin"],
   }
   
-  $solr_dist_dir = "${install_dir}/dist"  
-  $solr_doc_base = "${solr_dist_dir}/${package}.war"
-  $solr_home_dir = "${install_dir}/home"
+  $solr_dist_dir = "${home_dir}/dist"  
+  $solr_package = "${solr_dist_dir}/${package}.war"
+  $solr_home_dir = "${home_dir}"
   
   # Ensure solr dist directory exist, with the appropriate privileges and copy contents of tar'd dist directory
   file { $solr_dist_dir:
@@ -37,6 +38,15 @@ class solr::install ($source_url, $install_dir, $solr_data_dir, $package) {
     recurse => true,
     group   => "tomcat6",
     owner   => "tomcat6",
+  }
+  
+  # unpack solr dist into home directory
+  exec { "unpack-solr-war":
+    command => "jar -xf $solr_package",
+    cwd => "$solr_home_dir",
+    creates => "$solr_home_dir/WEB-INF/web.xml",
+    require => [File["$solr_dist_dir"],Package["openjdk-6-jdk"]],
+    path => ["/bin", "/usr/bin", "/usr/sbin"],
   }
   
   # Ensure solr home directory exist, with the appropriate privileges and copy contents of example package to set this up
