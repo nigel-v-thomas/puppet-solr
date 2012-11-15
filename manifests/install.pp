@@ -1,6 +1,14 @@
 class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
   $tmp_dir = "/var/tmp"
-  
+
+  package {"openjdk-6-jdk":
+    ensure => present,
+    before => Exec["home_dir"]
+  }  
+  package {"tomcat6":
+    ensure => present,
+    before => Exec["home_dir"]
+  }  
 
   exec { "home_dir":
     command => "echo 'ceating ${home_dir}' && mkdir -p ${home_dir}",
