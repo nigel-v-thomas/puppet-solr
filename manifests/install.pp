@@ -33,7 +33,7 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
   # Ensure solr dist directory exist, with the appropriate privileges and copy contents of tar'd dist directory
   file { $solr_dist_dir:
     ensure => directory,
-    require => Exec["unpack-solr"],
+    require => [Package["tomcat6"],Exec["unpack-solr"]],
     source => "${tmp_dir}/${package}/dist/",
     recurse => true,
     group   => "tomcat6",
@@ -52,7 +52,7 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
   # Ensure solr home directory exist, with the appropriate privileges and copy contents of example package to set this up
   file { $solr_home_dir:
     ensure => directory,
-    require => Exec["unpack-solr"],
+    require => [Package["tomcat6"],Exec["unpack-solr"]],
     source => "${tmp_dir}/$package/example/solr",
     recurse => true,
     group   => "tomcat6",
