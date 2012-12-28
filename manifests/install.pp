@@ -74,7 +74,7 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
    
   file { "/etc/tomcat6/Catalina/localhost/solr.xml":
     ensure => present,
-    content => template("solr/solr.xml.erb"),
+    content => template("solr/tomcat_solr.xml.erb"),
     require => [Package["tomcat6"],File[$solr_home_dir]],
     notify  => Service['tomcat6'],
   }
@@ -82,7 +82,7 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
   # Tomcat config file
   file { "/etc/tomcat6/server.xml":
     ensure => present,
-    content => template("solr/server.xml.erb"),
+    content => template("solr/tomcat_server.xml.erb"),
     require => [Package["tomcat6"],File[$solr_home_dir]],
     notify  => Service['tomcat6'],
   }
