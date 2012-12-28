@@ -8,8 +8,13 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
   package {"tomcat6":
     ensure => present,
     before => Exec["home_dir"]
-  }  
+  }
 
+  service { "tomcat6":
+    ensure => "running",
+    require => [Package["tomcat6"]]
+  }
+  
   exec { "home_dir":
     command => "echo 'ceating ${home_dir}' && mkdir -p ${home_dir}",
     path => ["/bin", "/usr/bin", "/usr/sbin"],
