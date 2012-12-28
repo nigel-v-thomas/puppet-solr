@@ -78,5 +78,13 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
     require => [Package["tomcat6"],File[$solr_home_dir]],
     notify  => Service['tomcat6'],
   }
-  
+
+  # Tomcat config file
+  file { "/etc/tomcat6/server.xml":
+    ensure => present,
+    content => template("solr/server.xml.erb"),
+    require => [Package["tomcat6"],File[$solr_home_dir]],
+    notify  => Service['tomcat6'],
+  }
+    
 }
