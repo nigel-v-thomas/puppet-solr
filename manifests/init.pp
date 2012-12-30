@@ -25,7 +25,8 @@ class solr (
       $home_dir="/usr/share/solr",
       $package="apache-solr-4.0.0",
       $solr_data_dir="/var/lib/solr/data",
-      $cores = ['development','test']
+      $cores = ['development','test'],
+      $tomcat_connector_port="8983",
       ) {
 
   include solr::params
@@ -35,14 +36,14 @@ class solr (
     home_dir => $home_dir,
     solr_data_dir => $solr_data_dir,
     package => $package,
+    tomcat_connector_port => $tomcat_connector_port,
   }
   
-  # TODO Create our solr cores
-  #solr::core {$cores:
-  #  base_data_dir => $solr_data_dir,
-  #  solr_home => $home_dir,
-  #  require => Class['solr::install'],
-  #}
+  solr::core {$cores:
+    base_data_dir => $solr_data_dir,
+    solr_home => $home_dir,
+    require => Class['solr::install'],
+  }
 }
   
 

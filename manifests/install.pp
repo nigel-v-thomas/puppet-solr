@@ -1,4 +1,4 @@
-class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
+class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $tomcat_connector_port) {
   $tmp_dir = "/var/tmp"
 
   package {"openjdk-6-jdk":
@@ -77,6 +77,8 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
     content => template("solr/tomcat_solr.xml.erb"),
     require => [Package["tomcat6"],File[$solr_home_dir]],
     notify  => Service['tomcat6'],
+    group   => "tomcat6",
+    owner   => "tomcat6",
   }
 
   # Tomcat config file
@@ -85,6 +87,18 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package) {
     content => template("solr/tomcat_server.xml.erb"),
     require => [Package["tomcat6"],File[$solr_home_dir]],
     notify  => Service['tomcat6'],
+    group   => "tomcat6",
+    owner   => "tomcat6",
   }
     
+  # Solr schema file
+  file { "$solr_home_dir/solr.xml":
+    ensure => present,
+    content => template("solr/solr.xml.erb"),
+    require => [Package["tomcat6"],File[$solr_home_dir]],
+    notify  => Service['tomcat6'],
+    group   => "tomcat6",
+    owner   => "tomcat6",
+  }
+  
 }
