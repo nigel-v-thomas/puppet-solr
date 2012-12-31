@@ -1,9 +1,7 @@
 # Class: solr
 #
 # This module helps you create a multi-core solr install
-# from scratch. I'm packaging a version of solr in the files
-# directory for convenience. You can replace it with a newer
-# version if you like.
+# from scratch.
 #
 # IMPORTANT: Works only with Ubuntu as of now. Other platform
 # support is most welcome. 
@@ -34,16 +32,12 @@ class solr (
   class { "solr::install":
     source_url => $source_url,
     home_dir => $home_dir,
-    solr_data_dir => $solr_data_dir,
     package => $package,
+    solr_data_dir => $solr_data_dir,
+    cores => $cores,
     tomcat_connector_port => $tomcat_connector_port,
   }
   
-  solr::core {$cores:
-    base_data_dir => $solr_data_dir,
-    solr_home => $home_dir,
-    require => Class['solr::install'],
-  }
 }
   
 

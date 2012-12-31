@@ -1,6 +1,9 @@
-class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $tomcat_connector_port) {
+class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $cores, $tomcat_connector_port) {
   $tmp_dir = "/var/tmp"
-
+  $solr_dist_dir = "${home_dir}/dist"  
+  $solr_package = "${solr_dist_dir}/${package}.war"
+  $solr_home_dir = "${home_dir}"
+  
   package {"openjdk-6-jdk":
     ensure => present,
     before => Exec["home_dir"]
@@ -11,8 +14,10 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $tomcat_c
   }
 
   service { "tomcat6":
+    enable => "true",
     ensure => "running",
-    require => [Package["tomcat6"]]
+    require => [Package["tomcat6"]],
+    subscribe => File["$solr_home_dir/solr.xml"],
   }
   
   exec { "home_dir":
@@ -38,10 +43,6 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $tomcat_c
     require => Exec["download-solr"],
     path => ["/bin", "/usr/bin", "/usr/sbin"],
   }
-  
-  $solr_dist_dir = "${home_dir}/dist"  
-  $solr_package = "${solr_dist_dir}/${package}.war"
-  $solr_home_dir = "${home_dir}"
   
   # Ensure solr dist directory exist, with the appropriate privileges and copy contents of tar'd dist directory
   file { $solr_dist_dir:
@@ -90,15 +91,20 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $tomcat_c
     group   => "tomcat6",
     owner   => "tomcat6",
   }
-    
-  # Solr schema file
+  
+  # Create cores
+  solr::core {$cores:
+    base_data_dir => $solr_data_dir,
+    solr_home => $home_dir,
+    notify => Service['tomcat6'],
+  }
+  
+  # Create Solr file referencing new cores
   file { "$solr_home_dir/solr.xml":
     ensure => present,
     content => template("solr/solr.xml.erb"),
-    require => [Package["tomcat6"],File[$solr_home_dir]],
     notify  => Service['tomcat6'],
     group   => "tomcat6",
     owner   => "tomcat6",
   }
-  
 }
