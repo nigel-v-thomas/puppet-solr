@@ -2,21 +2,26 @@ puppet-solr
 ===========
 
 Solr search server, ubuntu, tomcat puppet module
-Based on (https://github.com/codeinthehole/puppet-solr, https://github.com/vamsee/puppet-solr)
+Currently supports multi-core installations of Solr 4.
+
+Based on (https://github.com/nigel-v-thomas/puppet-solr)
+Which was based on (https://github.com/codeinthehole/puppet-solr, https://github.com/vamsee/puppet-solr)
 
 Usage
 ======
 ### Minimal:
 
     class { "solr":
-            install_dir => "/vagrant/www/deploy/solr",
+            home_dir => "/vagrant/www/deploy/solr",
     }
 
 ### Maximal:
 
     class { "solr":
-          source_url => "http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1.tgz",
-          install_dir => "/usr/share/solr",
-          package => "apache-solr-3.6.1",
-          solr_data_dir => "/var/lib/solr/data",
+	        source_url => "http://apache.mirrors.lucidnetworks.net/lucene/solr/4.0.0/apache-solr-4.0.0.tgz",
+	        home_dir => "/usr/share/solr",
+	        package => "apache-solr-4.0.0",
+	        solr_data_dir => "/var/lib/solr/data",
+	        cores => ["development","test"],
+	        tomcat_connector_port => "8983",
     }
