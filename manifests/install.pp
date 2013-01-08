@@ -96,6 +96,7 @@ class solr::install ($source_url, $home_dir, $solr_data_dir, $package, $cores, $
   solr::core {$cores:
     base_data_dir => $solr_data_dir,
     solr_home => $home_dir,
+    require => Package['tomcat6'],
     notify => Service['tomcat6'],
   }
   
