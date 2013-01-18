@@ -1,9 +1,7 @@
 # Class: solr
 #
 # This module helps you create a multi-core solr install
-# from scratch. I'm packaging a version of solr in the files
-# directory for convenience. You can replace it with a newer
-# version if you like.
+# from scratch.
 #
 # IMPORTANT: Works only with Ubuntu as of now. Other platform
 # support is most welcome. 
@@ -21,11 +19,12 @@
 #
 # [Remember: No empty lines between comments and class definition]
 class solr (
-      $source_url="http://mirror.ox.ac.uk/sites/rsync.apache.org/lucene/solr/3.6.1/apache-solr-3.6.1.tgz",
+      $source_url="http://apache.mirrors.lucidnetworks.net/lucene/solr/4.0.0/apache-solr-4.0.0.tgz",
       $home_dir="/usr/share/solr",
-      $package="apache-solr-3.6.1",
+      $package="apache-solr-4.0.0",
       $solr_data_dir="/var/lib/solr/data",
-      $cores = ['development','test']
+      $cores = ['development','test'],
+      $tomcat_connector_port="8983",
       ) {
 
   include solr::params
@@ -33,16 +32,12 @@ class solr (
   class { "solr::install":
     source_url => $source_url,
     home_dir => $home_dir,
-    solr_data_dir => $solr_data_dir,
     package => $package,
+    solr_data_dir => $solr_data_dir,
+    cores => $cores,
+    tomcat_connector_port => $tomcat_connector_port,
   }
   
-  # TODO Create our solr cores
-  #solr::core {$cores:
-  #  base_data_dir => $solr_data_dir,
-  #  solr_home => $home_dir,
-  #  require => Class['solr::install'],
-  #}
 }
   
 
